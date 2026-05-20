@@ -71,3 +71,60 @@
 - Для интеграции рекомендованы OIDC Authorization Code + PKCE для мобильного приложения, service JWT или mTLS внутри контура и mTLS + OAuth2 Client Credentials для взаимодействия с партнером.
 - Критичные проверки: объектная авторизация по собственнику, ЖК, дому, подъезду и помещению; минимизация данных; явные согласия на биометрию и номера автомобилей; централизованный аудит.
 - Биометрия, видеопотоки и номера автомобилей не должны попадать в DWH/BI и ML/AI-контуры без отдельного правового основания, согласия и обезличивания.
+
+# Отчет по заданию 4
+
+Выполнено задание 4 проектной работы 5: подготовлена ролевая модель Kubernetes RBAC, скрипты создания пользователей, ролей и привязок.
+
+Созданы файлы:
+
+- `Task4/rbac-table.md`
+- `Task4/01-create-users.sh`
+- `Task4/02-create-roles.sh`
+- `Task4/03-bind-roles.sh`
+- `Task4/.gitignore`
+
+Что сделано:
+
+- Запущен пустой Minikube и проверен доступ к API Kubernetes.
+- Подготовлена таблица ролей и соответствующих групп пользователей по оргструктуре PropDevelopment.
+- Выделены группы `viewers`, `platform-configurators`, `product-operators`, `security-admins`, `data-analysts`, `cluster-admins`.
+- Скрипт `01-create-users.sh` создает тестовых пользователей через Kubernetes CSR и выпускает kubeconfig-файлы.
+- Скрипт `02-create-roles.sh` создает namespace и ClusterRole.
+- Скрипт `03-bind-roles.sh` создает ClusterRoleBinding и RoleBinding.
+- Сгенерированные приватные ключи, сертификаты и kubeconfig-файлы исключены из PR через `Task4/.gitignore`.
+
+Ключевые выводы:
+
+- Просмотр ресурсов без секретов отделен от привилегированного ИБ-доступа.
+- Привилегированное чтение `secrets` выдано только группе `propdevelopment:security-admins`.
+- Настройка окружений и эксплуатационные действия разделены: DevOps может конфигурировать namespace, операционные команды могут смотреть логи, масштабировать workload и перезапускать pod без доступа к секретам.
+- Для аналитического контура выделен отдельный доступ к namespace `prop-data` без доступа к секретам и без изменения workload.
+
+# Отчет по заданию 5
+
+Выполнено задание 5 проектной работы 5: подготовлена и проверена сетевая политика Kubernetes для разграничения трафика между четырьмя сервисами.
+
+Создан файл:
+
+- `Task5/non-admin-api-allow.yaml`
+
+Что сделано:
+
+- В namespace `task5-traffic` развернуты четыре nginx-сервиса с метками `role=front-end`, `role=back-end-api`, `role=admin-front-end`, `role=admin-back-end-api`.
+- Подготовлен набор NetworkPolicy: default deny для ingress/egress, разрешение DNS egress и allow-политики для двух разрешенных пар.
+- Для корректной проверки создан отдельный профиль Minikube `task5-netpol` с Calico CNI, так как стандартный профиль Minikube принимал NetworkPolicy, но не применял их на уровне сети.
+- Политики применены командой `kubectl apply -n task5-traffic -f Task5/non-admin-api-allow.yaml`.
+
+Проверка трафика:
+
+- `front-end -> back-end-api`: разрешено, nginx отвечает.
+- `back-end-api -> front-end`: разрешено, nginx отвечает.
+- `admin-front-end -> admin-back-end-api`: разрешено, nginx отвечает.
+- `admin-back-end-api -> admin-front-end`: разрешено, nginx отвечает.
+- `front-end -> admin-back-end-api`: запрещено, `wget` завершается по timeout.
+- `admin-front-end -> back-end-api`: запрещено, `wget` завершается по timeout.
+
+Ключевой вывод:
+
+- Изоляция работает только при CNI с поддержкой NetworkPolicy. На профиле `task5-netpol` с Calico запрещенный межконтурный трафик блокируется корректно.
