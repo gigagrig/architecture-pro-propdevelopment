@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" version="24.8.0">
+  <diagram id="smart-home-context" name="C4 Context - Smart Home">
+    <mxGraphModel dx="1422" dy="794" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1000" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" value="Контекст новых сервисов Умный дом" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontStyle=1;fontSize=24;fontColor=#17202A;" vertex="1" parent="1">
+          <mxGeometry x="430" y="40" width="740" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="owner" value="&lt;b&gt;Собственник&lt;/b&gt;&lt;br&gt;Пользователь мобильного приложения" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fontSize=14;fontColor=#17202A;" vertex="1" parent="1">
+          <mxGeometry x="90" y="310" width="120" height="220" as="geometry" />
+        </mxCell>
+        <mxCell id="pd-system" value="&lt;b&gt;PropDevelopment&lt;/b&gt;&lt;br&gt;Сервисы для собственников&lt;br&gt;&lt;font style=&quot;font-size: 11px&quot;&gt;Мобильное приложение, tenant-core-app, CRM собственников, сервис интеграции Умный дом&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#1F77B4;strokeColor=#155A8A;fontColor=#FFFFFF;fontSize=15;spacing=12;" vertex="1" parent="1">
+          <mxGeometry x="390" y="275" width="330" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="partner" value="&lt;b&gt;Платформа партнера Умный дом&lt;/b&gt;&lt;br&gt;Видеодомофон, распознавание лиц, распознавание номеров, управление устройствами&lt;br&gt;&lt;font style=&quot;font-size: 11px&quot;&gt;Внешняя система партнера&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#8C8496;strokeColor=#736782;fontColor=#FFFFFF;fontSize=15;spacing=12;" vertex="1" parent="1">
+          <mxGeometry x="880" y="275" width="350" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="intercom" value="&lt;b&gt;Интеллектуальный домофон&lt;/b&gt;&lt;br&gt;Звонок, видео, открытие двери, биометрическая идентификация" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#E8F2FB;strokeColor=#6EA6D7;fontColor=#17202A;fontSize=13;spacing=10;" vertex="1" parent="1">
+          <mxGeometry x="1320" y="185" width="220" height="115" as="geometry" />
+        </mxCell>
+        <mxCell id="barrier" value="&lt;b&gt;Интеллектуальный шлагбаум&lt;/b&gt;&lt;br&gt;Распознавание номера автомобиля и открытие проезда" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#E8F2FB;strokeColor=#6EA6D7;fontColor=#17202A;fontSize=13;spacing=10;" vertex="1" parent="1">
+          <mxGeometry x="1320" y="410" width="220" height="115" as="geometry" />
+        </mxCell>
+        <mxCell id="uk" value="&lt;b&gt;Управляющая компания&lt;/b&gt;&lt;br&gt;Назначает зоны доступа, управляет жильцами и объектами ЖК" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#F5F5F5;strokeColor=#A0A0A0;fontColor=#17202A;fontSize=13;spacing=10;" vertex="1" parent="1">
+          <mxGeometry x="455" y="610" width="260" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="regulator-note" value="&lt;b&gt;Ключевые границы доверия&lt;/b&gt;&lt;br&gt;1. Собственник входит через приложение PropDevelopment.&lt;br&gt;2. PropDevelopment принимает решение о правах доступа к объекту и передает партнеру только минимальный набор данных.&lt;br&gt;3. Биометрические шаблоны, видео и номера авто обрабатываются партнером по договору и согласию субъекта." style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#FFF3CD;strokeColor=#D6B656;fontColor=#17202A;fontSize=13;align=left;spacing=12;" vertex="1" parent="1">
+          <mxGeometry x="850" y="610" width="490" height="155" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-owner-pd" value="Использует мобильное приложение&lt;br&gt;[HTTPS, OIDC]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#17202A;fontSize=12;endArrow=block;" edge="1" parent="1" source="owner" target="pd-system">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-pd-partner" value="Команды управления доступом, разрешения, события&lt;br&gt;[REST/gRPC, mTLS, OAuth2 Client Credentials]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#17202A;fontSize=12;endArrow=block;" edge="1" parent="1" source="pd-system" target="partner">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-partner-intercom" value="Управляет устройством&lt;br&gt;и получает события" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#17202A;fontSize=12;endArrow=block;" edge="1" parent="1" source="partner" target="intercom">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-partner-barrier" value="Управляет устройством&lt;br&gt;и получает события" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#17202A;fontSize=12;endArrow=block;" edge="1" parent="1" source="partner" target="barrier">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-uk-pd" value="Администрирует права доступа&lt;br&gt;по ЖК, дому, подъезду, помещению" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#17202A;fontSize=12;endArrow=block;" edge="1" parent="1" source="uk" target="pd-system">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

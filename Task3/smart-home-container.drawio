@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" version="24.8.0">
+  <diagram id="smart-home-container" name="C4 Container - Smart Home">
+    <mxGraphModel dx="1650" dy="920" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1900" pageHeight="1200" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" value="Обновленная контейнерная диаграмма: сервисы Умный дом" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontStyle=1;fontSize=24;fontColor=#17202A;" vertex="1" parent="1">
+          <mxGeometry x="430" y="35" width="840" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="pd-boundary" value="PropDevelopment / Группа сервисов ЖКУ" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#666666;dashed=1;fontStyle=1;fontSize=15;align=left;verticalAlign=top;spacing=12;" vertex="1" parent="1">
+          <mxGeometry x="260" y="120" width="1050" height="800" as="geometry" />
+        </mxCell>
+        <mxCell id="external-boundary" value="Внешний контур партнера" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#736782;dashed=1;fontStyle=1;fontSize=15;align=left;verticalAlign=top;spacing=12;" vertex="1" parent="1">
+          <mxGeometry x="1400" y="120" width="390" height="800" as="geometry" />
+        </mxCell>
+        <mxCell id="owner" value="&lt;b&gt;Собственник&lt;/b&gt;" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fontSize=14;fontColor=#17202A;" vertex="1" parent="1">
+          <mxGeometry x="70" y="335" width="100" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="mobile" value="&lt;b&gt;Витрина сервисов для собственников&lt;/b&gt;&lt;br&gt;Mobile app iOS/Android&lt;br&gt;&lt;font style=&quot;font-size: 11px&quot;&gt;Функции домофона, шлагбаума, управления доступами&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#1F77B4;strokeColor=#155A8A;fontColor=#FFFFFF;fontSize=13;spacing=10;" vertex="1" parent="1">
+          <mxGeometry x="330" y="230" width="245" height="125" as="geometry" />
+        </mxCell>
+        <mxCell id="auth" value="&lt;b&gt;auth-service-1&lt;/b&gt;&lt;br&gt;Keycloak&lt;br&gt;&lt;font style=&quot;font-size: 11px&quot;&gt;OIDC, MFA/step-up для критичных действий&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#1F77B4;strokeColor=#155A8A;fontColor=#FFFFFF;fontSize=13;spacing=10;" vertex="1" parent="1">
+          <mxGeometry x="330" y="455" width="245" height="115" as="geometry" />
+        </mxCell>
+        <mxCell id="tenant" value="&lt;b&gt;tenant-core-app&lt;/b&gt;&lt;br&gt;Kotlin, Spring Boot&lt;br&gt;&lt;font style=&quot;font-size: 11px&quot;&gt;Бизнес-функции для собственников, проверка сессии и маршрутизация команд&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#1F77B4;strokeColor=#155A8A;fontColor=#FFFFFF;fontSize=13;spacing=10;" vertex="1" parent="1">
+          <mxGeometry x="680" y="230" width="260" height="125" as="geometry" />
+        </mxCell>
+        <mxCell id="tenant-db" value="&lt;b&gt;tenant-core-db&lt;/b&gt;&lt;br&gt;PostgreSQL&lt;br&gt;&lt;font style=&quot;font-size: 11px&quot;&gt;Данные услуг собственников&lt;/font&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;size=15;fillColor=#1F77B4;strokeColor=#155A8A;fontColor=#FFFFFF;fontSize=13;spacing=10;" vertex="1" parent="1">
+          <mxGeometry x="680" y="455" width="230" height="115" as="geometry" />
+        </mxCell>
+        <mxCell id="crm" value="&lt;b&gt;CRM собственников&lt;/b&gt;&lt;br&gt;Kotlin, Spring Boot&lt;br&gt;&lt;font style=&quot;font-size: 11px&quot;&gt;Проверка собственника, дома, помещения, УК&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#1F77B4;strokeColor=#155A8A;fontColor=#FFFFFF;fontSize=13;spacing=10;" vertex="1" parent="1">
+          <mxGeometry x="680" y="650" width="260" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="integration" value="&lt;b&gt;smart-home-integration-app&lt;/b&gt;&lt;br&gt;Kotlin, Spring Boot&lt;br&gt;&lt;font style=&quot;font-size: 11px&quot;&gt;Антикоррупционный слой для партнера: авторизация объекта доступа, минимизация данных, rate limit, аудит&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#2E8B57;strokeColor=#1F6B42;fontColor=#FFFFFF;fontSize=13;spacing=10;" vertex="1" parent="1">
+          <mxGeometry x="1010" y="230" width="260" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="integration-db" value="&lt;b&gt;smart-home-db&lt;/b&gt;&lt;br&gt;PostgreSQL&lt;br&gt;&lt;font style=&quot;font-size: 11px&quot;&gt;Согласия, привязки устройств, разрешения, журнал команд и событий&lt;/font&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;size=15;fillColor=#2E8B57;strokeColor=#1F6B42;fontColor=#FFFFFF;fontSize=13;spacing=10;" vertex="1" parent="1">
+          <mxGeometry x="1025" y="455" width="235" height="125" as="geometry" />
+        </mxCell>
+        <mxCell id="audit" value="&lt;b&gt;SIEM / audit log&lt;/b&gt;&lt;br&gt;Централизованные события ИБ&lt;br&gt;&lt;font style=&quot;font-size: 11px&quot;&gt;Команды открытия, изменения прав, ошибки авторизации, действия партнера&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#F6C85F;strokeColor=#B88916;fontColor=#17202A;fontSize=13;spacing=10;" vertex="1" parent="1">
+          <mxGeometry x="1010" y="650" width="260" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="partner-api" value="&lt;b&gt;Smart Home Partner API&lt;/b&gt;&lt;br&gt;Внешняя платформа партнера&lt;br&gt;&lt;font style=&quot;font-size: 11px&quot;&gt;API управления устройствами, событиями, биометрией и номерами авто&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#8C8496;strokeColor=#736782;fontColor=#FFFFFF;fontSize=13;spacing=10;" vertex="1" parent="1">
+          <mxGeometry x="1465" y="230" width="260" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="intercom" value="&lt;b&gt;Интеллектуальный домофон&lt;/b&gt;&lt;br&gt;Видео, звонок, открытие двери, распознавание лица" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#E8F2FB;strokeColor=#6EA6D7;fontColor=#17202A;fontSize=13;spacing=10;" vertex="1" parent="1">
+          <mxGeometry x="1465" y="475" width="260" height="105" as="geometry" />
+        </mxCell>
+        <mxCell id="barrier" value="&lt;b&gt;Интеллектуальный шлагбаум&lt;/b&gt;&lt;br&gt;Распознавание номера и управление проездом" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#E8F2FB;strokeColor=#6EA6D7;fontColor=#17202A;fontSize=13;spacing=10;" vertex="1" parent="1">
+          <mxGeometry x="1465" y="650" width="260" height="105" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-owner-mobile" value="Использует функции Умный дом&lt;br&gt;[HTTPS]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#17202A;fontSize=12;endArrow=block;" edge="1" parent="1" source="owner" target="mobile">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-mobile-auth" value="Вход, refresh token, step-up&lt;br&gt;[OIDC Authorization Code + PKCE]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#17202A;fontSize=12;endArrow=block;" edge="1" parent="1" source="mobile" target="auth">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-mobile-tenant" value="Команды пользователя и запросы статуса&lt;br&gt;[REST, JWT]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#17202A;fontSize=12;endArrow=block;" edge="1" parent="1" source="mobile" target="tenant">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-tenant-db" value="[JDBC]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#17202A;fontSize=12;endArrow=block;" edge="1" parent="1" source="tenant" target="tenant-db">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-tenant-crm" value="Проверка собственника и объекта&lt;br&gt;[REST]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#17202A;fontSize=12;endArrow=block;" edge="1" parent="1" source="tenant" target="crm">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-tenant-integration" value="Команда открыть/выдать доступ/получить событие&lt;br&gt;[internal REST, service JWT]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#17202A;fontSize=12;endArrow=block;" edge="1" parent="1" source="tenant" target="integration">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-integration-db" value="Разрешения, согласия, аудит&lt;br&gt;[JDBC]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#17202A;fontSize=12;endArrow=block;" edge="1" parent="1" source="integration" target="integration-db">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-integration-audit" value="События безопасности&lt;br&gt;[syslog/HTTP]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#17202A;fontSize=12;endArrow=block;" edge="1" parent="1" source="integration" target="audit">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-tenant-audit" value="Действия пользователя&lt;br&gt;[audit events]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#17202A;fontSize=12;endArrow=block;" edge="1" parent="1" source="tenant" target="audit">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-integration-partner" value="Команды и события устройств&lt;br&gt;[mTLS + OAuth2 Client Credentials, allowlist API]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#17202A;fontSize=12;endArrow=block;" edge="1" parent="1" source="integration" target="partner-api">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-partner-intercom" value="Управление и телеметрия" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#17202A;fontSize=12;endArrow=block;" edge="1" parent="1" source="partner-api" target="intercom">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-partner-barrier" value="Управление и телеметрия" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#17202A;fontSize=12;endArrow=block;" edge="1" parent="1" source="partner-api" target="barrier">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
