@@ -1,0 +1,4 @@
+minikube-audit/
+audit.log
+audit-log-report.md
+__pycache__/

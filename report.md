@@ -128,3 +128,32 @@
 Ключевой вывод:
 
 - Изоляция работает только при CNI с поддержкой NetworkPolicy. На профиле `task5-netpol` с Calico запрещенный межконтурный трафик блокируется корректно.
+
+# Отчет по заданию 6
+
+Выполнено задание 6 проектной работы 5: подготовлены политика аудита Kubernetes, симуляция инцидента и анализатор audit log.
+
+Созданы файлы:
+
+- `Task6/audit-policy.yaml`
+- `Task6/01-start-minikube-audit.sh`
+- `Task6/simulate-incident.sh`
+- `Task6/analyze-audit-log.py`
+- `Task6/analysis.md`
+- `Task6/audit-extract.json`
+- `Task6/audit-incident-analysis.md`
+
+Что сделано:
+
+- Подготовлена audit policy с уровнем `RequestResponse` для чувствительных ресурсов: `pods`, `pods/exec`, `secrets`, `configmaps`, `serviceaccounts`, `roles`, `rolebindings`, `clusterroles`, `clusterrolebindings`.
+- Добавлен скрипт запуска отдельного профиля Minikube `task6-audit` с audit log в `/var/log/audit.log` внутри Minikube и командой экспорта в `Task6/minikube-audit/audit.log`.
+- Добавлен скрипт `simulate-incident.sh`, который воспроизводит действия из задания: попытку доступа к secrets, создание privileged pod, exec в системный pod, попытку удаления audit policy и создание RoleBinding на `cluster-admin`.
+- Подготовлен Python-анализатор `analyze-audit-log.py`, который ищет подозрительные события и может формировать Markdown-отчет или JSON-выжимку для `audit-extract.json`.
+- Подготовлен краткий отчет `analysis.md` с описанием инициаторов, вредоносных действий, критериев компрометации и ошибок RBAC.
+
+Ключевые выводы:
+
+- Критичными событиями считаются успешное чтение secrets, создание privileged pod и выдача `cluster-admin` через RoleBinding.
+- Попытка отключить или удалить audit policy является индикатором сокрытия следов и требует расследования даже при неуспешном ответе API.
+- RBAC должен ограничивать доступ ServiceAccount `monitoring` к secrets, создание RoleBinding на `cluster-admin` и использование `pods/exec` в системных namespace.
+- Для блокировки privileged workloads одного RBAC недостаточно: нужна Pod Security Admission, Kyverno, Gatekeeper или другой admission-контроль.
