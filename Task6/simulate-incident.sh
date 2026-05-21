@@ -4,8 +4,9 @@ set -euo pipefail
 kubectl create ns secure-ops --dry-run=client -o yaml | kubectl apply -f -
 kubectl config set-context --current --namespace=secure-ops
 
+kubectl wait --for=jsonpath='{.metadata.name}'=default serviceaccount/default -n secure-ops --timeout=60s
 kubectl create sa monitoring --dry-run=client -o yaml | kubectl apply -f -
-kubectl run attacker-pod --image=alpine --command -- sleep 3600
+kubectl run attacker-pod --image=alpine --command --dry-run=client -o yaml -- sleep 3600 | kubectl apply -f -
 kubectl auth can-i get secrets --as=system:serviceaccount:secure-ops:monitoring || true
 
 KUBE_SYSTEM_SECRET="$(
@@ -35,15 +36,21 @@ spec:
   restartPolicy: Never
 EOF
 
-COREDNS_POD="$(
-  kubectl get pods -n kube-system -l k8s-app=kube-dns -o jsonpath='{.items[0].metadata.name}' 2>/dev/null || true
-)"
+COREDNS_POD=""
+for _ in {1..30}; do
+  COREDNS_POD="$(kubectl get pods -n kube-system -l k8s-app=kube-dns -o jsonpath='{.items[0].metadata.name}' 2>/dev/null || true)"
+  [[ -n "${COREDNS_POD}" ]] && break
+  sleep 2
+done
 
 if [[ -n "${COREDNS_POD}" ]]; then
-  kubectl exec -n kube-system "${COREDNS_POD}" -- cat /etc/resolv.conf || true
+  kubectl exec -n kube-system "${COREDNS_POD}" -- /coredns -version || true
 fi
 
-kubectl delete -f /etc/kubernetes/audit-policy.yaml --as=admin || true
+kubectl create configmap audit-policy -n kube-system \
+  --from-file=audit-policy.yaml="${BASH_SOURCE%/*}/audit-policy.yaml" \
+  --dry-run=client -o yaml | kubectl apply -f -
+kubectl delete configmap audit-policy -n kube-system --as=admin || true
 
 cat <<'EOF' | kubectl apply -f -
 apiVersion: rbac.authorization.k8s.io/v1

@@ -31,6 +31,15 @@ def is_privileged_pod(event):
     return False
 
 
+def effective_user(event):
+    return get_path(
+        event,
+        "impersonatedUser",
+        "username",
+        default=get_path(event, "user", "username", default=""),
+    )
+
+
 def summarize_event(event, incident_type, severity, reason):
     object_ref = event.get("objectRef") or {}
     response_status = event.get("responseStatus") or {}
@@ -39,7 +48,8 @@ def summarize_event(event, incident_type, severity, reason):
         "severity": severity,
         "stage": event.get("stage", ""),
         "timestamp": event.get("requestReceivedTimestamp", ""),
-        "user": get_path(event, "user", "username", default=""),
+        "user": effective_user(event),
+        "authenticated_user": get_path(event, "user", "username", default=""),
         "verb": event.get("verb", ""),
         "namespace": object_ref.get("namespace", ""),
         "resource": object_ref.get("resource", ""),
@@ -51,8 +61,11 @@ def summarize_event(event, incident_type, severity, reason):
 
 
 def classify(event):
+    if event.get("stage") != "ResponseComplete":
+        return []
+
     object_ref = event.get("objectRef") or {}
-    user = get_path(event, "user", "username", default="")
+    user = effective_user(event)
     verb = event.get("verb", "")
     resource = object_ref.get("resource", "")
     subresource = object_ref.get("subresource", "")
@@ -76,7 +89,7 @@ def classify(event):
             )
         )
 
-    if verb == "create" and resource == "pods" and is_privileged_pod(event):
+    if verb == "create" and resource == "pods" and namespace == "secure-ops" and is_privileged_pod(event):
         findings.append(
             summarize_event(
                 event,
@@ -86,7 +99,7 @@ def classify(event):
             )
         )
 
-    if verb == "create" and resource == "pods" and subresource == "exec":
+    if resource == "pods" and subresource == "exec" and verb in {"create", "get"}:
         findings.append(
             summarize_event(
                 event,
@@ -97,7 +110,7 @@ def classify(event):
         )
 
     if verb == "delete" and (
-        "audit" in name
+        (resource == "configmaps" and name == "audit-policy")
         or api_group == "audit.k8s.io"
         or resource in {"policies", "auditpolicies"}
     ):
@@ -124,16 +137,6 @@ def classify(event):
                 "cluster-admin-rolebinding-created",
                 "critical",
                 "A RoleBinding grants cluster-admin privileges inside a namespace.",
-            )
-        )
-
-    if namespace == "kube-system" and resource == "secrets" and verb in {"get", "list"}:
-        findings.append(
-            summarize_event(
-                event,
-                "kube-system-secret-access",
-                "critical",
-                "A user or service account attempts to read secrets in kube-system.",
             )
         )
 

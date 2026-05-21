@@ -27,7 +27,3 @@ rules:
         resources:
           - policies
   - level: Metadata
-    resources:
-      - group: "*"
-        resources:
-          - "*"
