@@ -157,3 +157,44 @@
 - Попытка отключить или удалить audit policy является индикатором сокрытия следов и требует расследования даже при неуспешном ответе API.
 - RBAC должен ограничивать доступ ServiceAccount `monitoring` к secrets, создание RoleBinding на `cluster-admin` и использование `pods/exec` в системных namespace.
 - Для блокировки privileged workloads одного RBAC недостаточно: нужна Pod Security Admission, Kyverno, Gatekeeper или другой admission-контроль.
+
+# Отчет по заданию 7
+
+Выполнено задание 7 проектной работы 5: подготовлены политики безопасности pod с применением PodSecurity Admission и OPA Gatekeeper.
+
+Созданы файлы:
+
+- `Task7/01-create-namespace.yaml`
+- `Task7/insecure-manifests/01-privileged-pod.yaml`
+- `Task7/insecure-manifests/02-hostpath-pod.yaml`
+- `Task7/insecure-manifests/03-root-user-pod.yaml`
+- `Task7/secure-manifests/01-secure.yaml`
+- `Task7/secure-manifests/02-secure.yaml`
+- `Task7/secure-manifests/03-secure.yaml`
+- `Task7/gatekeeper/constraint-templates/privileged.yaml`
+- `Task7/gatekeeper/constraint-templates/hostpath.yaml`
+- `Task7/gatekeeper/constraint-templates/runasnonroot.yaml`
+- `Task7/gatekeeper/constraints/privileged.yaml`
+- `Task7/gatekeeper/constraints/hostpath.yaml`
+- `Task7/gatekeeper/constraints/runasnonroot.yaml`
+- `Task7/verify/verify-admission.sh`
+- `Task7/verify/validate-security.sh`
+- `Task7/audit-policy.yaml`
+- `Task7/README_FOR_REVIEWER.md`
+
+Что сделано:
+
+- Создан namespace `audit-zone` с PodSecurity Admission уровнем `restricted` в режимах `enforce`, `audit` и `warn`.
+- Подготовлены три небезопасных манифеста: privileged pod, pod с `hostPath` и pod с запуском от UID 0.
+- Подготовлены исправленные манифесты с `runAsNonRoot: true`, non-root UID, `allowPrivilegeEscalation: false`, `seccompProfile: RuntimeDefault`, `capabilities.drop: ["ALL"]`, `readOnlyRootFilesystem: true` и без `hostPath`.
+- Настроены Gatekeeper ConstraintTemplate и Constraint для запрета `privileged: true`, `hostPath`, запуска от root и отсутствия `readOnlyRootFilesystem`.
+- Добавлены проверочные скрипты для server-side admission-проверки и применения Gatekeeper-политик.
+
+Проверка:
+
+- `Task7/verify/verify-admission.sh`: небезопасные манифесты отклоняются, безопасные проходят.
+- `Task7/verify/validate-security.sh`: Gatekeeper templates и constraints применяются, ограничения работают в режиме `deny`.
+
+Ключевой вывод:
+
+- PodSecurity Admission закрывает базовые нарушения restricted-профиля на уровне namespace, а Gatekeeper добавляет явные проверяемые политики, включая обязательный `readOnlyRootFilesystem`.
