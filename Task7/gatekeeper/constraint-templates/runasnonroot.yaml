@@ -1,0 +1,61 @@
+apiVersion: templates.gatekeeper.sh/v1
+kind: ConstraintTemplate
+metadata:
+  name: k8srequirenonrootreadonly
+spec:
+  crd:
+    spec:
+      names:
+        kind: K8sRequireNonRootReadonly
+      validation:
+        openAPIV3Schema:
+          type: object
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package k8srequirenonrootreadonly
+
+        violation[{"msg": msg}] {
+          input.review.kind.kind == "Pod"
+          container := input.review.object.spec.containers[_]
+          not is_non_root(input.review.object, container)
+          msg := sprintf("container %q must set runAsNonRoot: true and must not run as UID 0", [container.name])
+        }
+
+        violation[{"msg": msg}] {
+          input.review.kind.kind == "Pod"
+          container := input.review.object.spec.initContainers[_]
+          not is_non_root(input.review.object, container)
+          msg := sprintf("initContainer %q must set runAsNonRoot: true and must not run as UID 0", [container.name])
+        }
+
+        violation[{"msg": msg}] {
+          input.review.kind.kind == "Pod"
+          container := input.review.object.spec.containers[_]
+          not has_readonly_rootfs(container)
+          msg := sprintf("container %q must set readOnlyRootFilesystem: true", [container.name])
+        }
+
+        violation[{"msg": msg}] {
+          input.review.kind.kind == "Pod"
+          container := input.review.object.spec.initContainers[_]
+          not has_readonly_rootfs(container)
+          msg := sprintf("initContainer %q must set readOnlyRootFilesystem: true", [container.name])
+        }
+
+        is_non_root(pod, container) {
+          container.securityContext.runAsNonRoot == true
+          not container.securityContext.runAsUser == 0
+        }
+
+        is_non_root(pod, container) {
+          not container.securityContext.runAsNonRoot == false
+          pod.spec.securityContext.runAsNonRoot == true
+          not container.securityContext.runAsUser == 0
+          not pod.spec.securityContext.runAsUser == 0
+        }
+
+        has_readonly_rootfs(container) {
+          container.securityContext.readOnlyRootFilesystem == true
+        }
+
