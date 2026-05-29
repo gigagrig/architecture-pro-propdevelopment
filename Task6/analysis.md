@@ -6,19 +6,19 @@
 
 - чтение `secrets` сервисным аккаунтом `system:serviceaccount:secure-ops:monitoring`;
 - создание pod с `securityContext.privileged=true`;
-- использование `kubectl exec`, которое фиксируется как `create` на подресурсе `pods/exec`;
+- использование `kubectl exec`, которое в текущем `audit.log` фиксируется как запрос к подресурсу `pods/exec` с кодом ответа `101`;
 - попытку удаления audit policy;
 - создание `RoleBinding`, который выдает `ClusterRole cluster-admin`.
 
-## Кто инициировал действия
+## Выявленные события
 
-| Действие | Ожидаемый инициатор в audit.log | Комментарий |
-| --- | --- | --- |
-| Доступ к secrets | `system:serviceaccount:secure-ops:monitoring` | Инициатор задан через `--as`. |
-| Создание privileged pod | Пользователь текущего kubeconfig | Обычно `minikube-user` или пользователь из активного kubeconfig. |
-| Exec в pod `kube-system` | Пользователь текущего kubeconfig | Действие выполняется без impersonation. |
-| Удаление audit policy | `admin` | В симуляции используется `--as=admin`; в реальном кластере запрос может завершиться ошибкой. |
-| Создание RoleBinding | Пользователь текущего kubeconfig | Действие выполняется без impersonation. |
+| Действие | Инициатор | Объект | Код ответа | Комментарий |
+| --- | --- | --- | --- | --- |
+| Доступ к secrets | `system:serviceaccount:secure-ops:monitoring` | `kube-system/secrets/bootstrap-token-ur1ufg` | `403` | Инициатор задан через `--as`; попытка чтения запрещена RBAC. |
+| Создание privileged pod | `minikube-user` | `secure-ops/pods/privileged-pod` | `201` | Pod создан с `securityContext.privileged=true`. |
+| Exec в pod `kube-system` | `minikube-user` | `kube-system/pods/exec/coredns-7d764666f9-nmnpj` | `101` | Запрос `kubectl exec` прошел upgrade-сессию к pod в системном namespace. |
+| Удаление audit policy | `admin` | `kube-system/configmaps/audit-policy` | `403` | В симуляции audit policy представлена временным `ConfigMap`; запрос выполнен через `--as=admin` и запрещен RBAC. |
+| Создание RoleBinding | `minikube-user` | `secure-ops/rolebindings/escalate-binding` | `201` | RoleBinding выдал `ClusterRole cluster-admin` сервисному аккаунту `monitoring`. |
 
 ## Вредоносные или подозрительные действия
 
